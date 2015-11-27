@@ -59,15 +59,40 @@ function get_pages_map( $content ) {
 	    max-width: inherit;
 	}
 	#map {
-	    height: 300px;
-	    border: 1px solid #000;
+	    height: 600px;
+	    border: 0px solid #000;
 	}
     </style>
     <script>
 	var markers = <?php echo json_encode( $markers, JSON_HEX_QUOT | JSON_HEX_TAG ); ?>;
     </script>
     <div id="map"></div>
+    <div class="siderbarmap">
+        <ul>
+            <input id="a" type="checkbox" onclick="toggleGroup('a')" checked="checked"></input>
+            <input id="b" type="checkbox" onclick="toggleGroup('b')" checked="checked"></input>
+            <input id="c" type="checkbox" onclick="toggleGroup('c')" checked="checked"></input>
+            
+        </ul>
+    </div>
     <script>
+
+	var markerGroups = {
+    
+        "a": [],
+        "b": [],
+        "c": []
+};
+function toggleGroup(type) {
+    for (var i = 0; i < markerGroups[type].length; i++) {
+        var marker = markerGroups[type][i];
+        if (!marker.getVisible()) {
+            marker.setVisible(true);
+        } else {
+            marker.setVisible(false);
+        }
+    }
+}
 	window.onload = function() {
 	    var latlng = new google.maps.LatLng(<?php echo trim($current_post_location[0]) ?>, <?php echo trim($current_post_location[1]) ?>);
 	    var map = new google.maps.Map(document.getElementById('map'), {
@@ -81,10 +106,14 @@ function get_pages_map( $content ) {
 		    position: new google.maps.LatLng(markers[i][0],markers[i][1] ),
 		    map: map,
 		    title: 'click to description',
-		    info: markers[i][4],
+		    info: markers[i][5],
 		    icon: 'http://google.com/mapfiles/ms/micons/green-dot.png',
+		    type: markers[i][4]
 		});
+		console.log(markers[i][4]);
+
 		(function(marker, i) {
+		    markerGroups[markers[i][4]].push(marker);
 		    google.maps.event.addListener(marker, 'click', function() {
 			if (infowindow) infowindow.close();
 			infowindow = new google.maps.InfoWindow({
@@ -97,6 +126,6 @@ function get_pages_map( $content ) {
 	};
     </script>
     <?php
-    wp_enqueue_script( 'maps', 'http://maps.google.com/maps/api/js?sensor=false', array(), true );
+    wp_enqueue_script( 'maps', 'http://maps.google.com/maps/api/js', array(), true );
     return $content;
 }
