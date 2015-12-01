@@ -35,7 +35,7 @@ function get_pages_map( $content ) {
     }
     $place_types = get_terms( 'place_type' );
 
-
+dump($place_types);
 
     $map_args  = array(
 	'post_type'	=> 'map_place',
@@ -97,7 +97,15 @@ function get_pages_map( $content ) {
             <?php
 	    $html = '';
     foreach( $place_types as $type ) {
-		$html .= '<li><a class="hidden" href="#' . $type->slug . '" data-type="' . $type->slug . '">' . $type->name . '</a></li>';
+		$types[$type->slug]['markers'] = array();
+		$type_description = explode(',', $type->description);
+		$types[$type->slug]['color'] = $type_description[0];
+		$types[$type->slug]['default'] = isset($type_description[1])?1:0;
+		$hidden = 'hidden';
+		if($type_description[1] == 'default'){
+		    $hidden = '';
+		}
+		$html .= '<li><a class="' . $hidden . '" href="#' . $type->slug . '" data-type="' . $type->slug . '">' . $type->name . '</a></li>';
 	    }
 	    echo $html;
 	?>
@@ -117,10 +125,6 @@ function get_pages_map( $content ) {
 
 
 var markerGroups = <?php
-
-foreach ($place_types as $type){
-    $types[$type->slug] = array();
-}
 
 echo json_encode( $types, JSON_HEX_QUOT | JSON_HEX_TAG  );
 
@@ -148,20 +152,22 @@ var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG
 		    map: map,
 		    title: markers[i].title,
 		    info: markers[i].title,
-		    //icon: 'http://google.com/mapfiles/ms/micons/green-dot.png',
-		    icon: pinSymbol("#1b8585"),
+		  
+		    icon: pinSymbol(markerGroups[markers[i].type].color),
 		    type: markers[i].type
 		});
 
 		console.log(markers[i].type);
-if(markers[i].type != 'pums'){
-    marker.setVisible(false)
+
+if(markerGroups[markers[i].type].default == 1){
+    marker.setOptions({'opacity': 0.3,'strokeWeight':.1});
 }
+
  bounds.extend(marker.position);
 
 map_markers.push(marker);
 
-markerGroups[markers[i].type].push(marker);
+markerGroups[markers[i].type].markers.push(marker);
 
 		(function(marker, i) {
 
@@ -269,9 +275,9 @@ if(this.classList.contains('hidden')){
     }
 
 
-    for (var i = 0; i < markerGroups[type].length; i++) {
+    for (var i = 0; i < markerGroups[type].markers.length; i++) {
 
-        var marker = markerGroups[type][i];
+        var marker = markerGroups[type].markers[i];
 
 	    if (!marker.getVisible()) {
             marker.setVisible(true);
