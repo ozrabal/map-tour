@@ -97,7 +97,7 @@ function get_pages_map( $content ) {
             <?php
 	    $html = '';
     foreach( $place_types as $type ) {
-		$html .= '<li><a href="#' . $type->slug . '" data-type="' . $type->slug . '">' . $type->name . '</a></li>';
+		$html .= '<li><a class="hidden" href="#' . $type->slug . '" data-type="' . $type->slug . '">' . $type->name . '</a></li>';
 	    }
 	    echo $html;
 	?>
@@ -127,7 +127,7 @@ echo json_encode( $types, JSON_HEX_QUOT | JSON_HEX_TAG  );
 
 ?>;
 
-
+var map_markers = [];
 
 var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG ); ?>;
 //var markerGroups = [];
@@ -148,13 +148,18 @@ var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG
 		    map: map,
 		    title: markers[i].title,
 		    info: markers[i].title,
-		    icon: 'http://google.com/mapfiles/ms/micons/green-dot.png',
+		    //icon: 'http://google.com/mapfiles/ms/micons/green-dot.png',
+		    icon: pinSymbol("#1b8585"),
 		    type: markers[i].type
 		});
-		console.log(markers[i].type);
 
-		
+		console.log(markers[i].type);
+if(markers[i].type != 'pums'){
+    marker.setVisible(false)
+}
  bounds.extend(marker.position);
+
+map_markers.push(marker);
 
 markerGroups[markers[i].type].push(marker);
 
@@ -176,8 +181,81 @@ markerGroups[markers[i].type].push(marker);
 	    map.fitBounds(bounds);
 	};
 
+console.log(map_markers);
 
 var toggle = (function toggle_markers(b){
+var toggle_buttons = document.querySelectorAll(b);
+
+for ( var i=0; i < toggle_buttons.length; i++ ) {
+
+	    toggle_buttons[i].addEventListener( 'click', function(e){
+
+
+	var type = this.getAttribute('data-type');
+
+	
+for ( var i=0; i < toggle_buttons.length; i++ ) {
+toggle_buttons[i].setAttribute('class', 'hidden');
+  if(toggle_buttons[i].getAttribute('data-type') == type){
+      toggle_buttons[i].setAttribute('class', '');
+        }else{
+	    
+    }
+
+}
+
+
+
+
+
+
+
+
+
+    for (var i = 0; i < map_markers.length; i++) {
+
+        var marker = map_markers[i];
+
+if(marker.type == type) {
+     marker.setVisible(true);
+     marker.setOptions({'opacity': 1, 'strokeWeight':1});
+
+}else{
+     //marker.setVisible(false);
+    marker.setOptions({'opacity': 0.3,'strokeWeight':.1});
+}
+
+
+//	    if (!marker.getVisible()) {
+//            marker.setVisible(true);
+//        } else {
+//            marker.setVisible(false);
+//        }
+
+	}
+
+}, false);
+};
+})('#map-legend a');
+
+
+
+
+
+function pinSymbol(color) {
+    
+    return {
+        path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
+        fillColor: color,
+        fillOpacity: 1,
+        strokeColor: '#fff',
+        strokeWeight: 2,
+        scale: .5,
+   };
+}
+
+
+var showhide = (function showhide_markers(b){
 var toggle_buttons = document.querySelectorAll(b);
 for ( var i=0; i < toggle_buttons.length; i++ ) {
     
@@ -192,16 +270,20 @@ if(this.classList.contains('hidden')){
 
 
     for (var i = 0; i < markerGroups[type].length; i++) {
+
         var marker = markerGroups[type][i];
-        if (!marker.getVisible()) {
+
+	    if (!marker.getVisible()) {
             marker.setVisible(true);
         } else {
             marker.setVisible(false);
         }
-    }
+    
+	}
+
 }, false);
 };
-})('#map-legend a');
+})('s#map-legend a');
 
 
 //	function toggleGroup(type) {
