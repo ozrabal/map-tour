@@ -24,15 +24,19 @@ add_action( 'plugins_loaded', function() {
     new Maptour();
 });
 
+
+
+
+
 add_action( 'the_content', 'get_pages_map' );
 function get_pages_map( $content ) {
-    //dump(__FILE__);
-    $current_post_location = get_post_meta( get_the_ID(), 'place_data', true );
-    if( !$current_post_location ){
-	//return $content;
+    if ( !is_single() && !is_page() ) {
+	return;
     }
-    $current_post_location = '52.4064,16.9252, 15, roadmap';
-    $current_post_location = explode( ',', $current_post_location );
+    $place_types = get_terms( 'place_type' );
+
+
+
     $map_args  = array(
 	'post_type'	=> 'map_place',
 	'post_status'	=> 'publish',
@@ -40,19 +44,34 @@ function get_pages_map( $content ) {
 	    array(
 		'key'	    => 'place_data',
 		'compare'   => 'EXIST',
-	    ),
-	),
+	    )
+	)
     );
     $map_query = new WP_Query( $map_args );
-    if( $map_query->have_posts() ) {
+    if ( $map_query->have_posts() ) {
+	$i = 0;
 	while ( $map_query->have_posts() ) {
 	    $map_query->the_post();
+
 	    $page_location = explode( ',', get_post_meta( get_the_ID(), 'place_data', true ) );
-	    $page_location[] = '<div id="content"><h3><a href="' . get_the_permalink() . '">' . get_the_title() . '</a></h3>' . get_the_content() . '</div>';
-	    $markers[] = $page_location;
+
+	    $map_markers[$i]['lat'] = $page_location[0];
+	    $map_markers[$i]['lng'] = $page_location[1];
+	    $map_markers[$i]['title'] = get_the_title();
+	    $map_markers[$i]['description'] = get_the_content();
+	    $map_markers[$i]['image'] = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
+	    $map_markers[$i]['url'] = get_permalink();
+	    $type = wp_get_post_terms( get_the_ID(), 'place_type', array( 'fields' => 'slugs') );
+	    $map_markers[$i]['type'] = $type[0];
+
+	    $i++;
+	    //$page_location[] = '<div id="content"><h3><a href="' . get_the_permalink() . '">' . get_the_title() . '</a></h3>' . get_the_content() . '</div>';
+	    //$markers[] = $page_location;
 	}
     }
-    dump($markers);
+    dump($map_markers);
+    //dump($markers);
+    //dump($place_types);
     ?>
     <style>
 	.entry-content img, .comment-content img, .widget img {
@@ -62,64 +81,88 @@ function get_pages_map( $content ) {
 	    height: 600px;
 	    border: 0px solid #000;
 	}
+	#map-legend .hidden{
+	    opacity: .2;
+	}
     </style>
     <script>
-	var markers = <?php echo json_encode( $markers, JSON_HEX_QUOT | JSON_HEX_TAG ); ?>;
+	
+	
+	
     </script>
     <div id="map"></div>
+
     <div class="siderbarmap">
-        <ul>
-            <input id="a" type="checkbox" onclick="toggleGroup('a')" checked="checked"></input>
-            <input id="b" type="checkbox" onclick="toggleGroup('b')" checked="checked"></input>
-            <input id="c" type="checkbox" onclick="toggleGroup('c')" checked="checked"></input>
+        <ul id="map-legend">
+            <?php
+	    $html = '';
+    foreach( $place_types as $type ) {
+		$html .= '<li><a href="#' . $type->slug . '" data-type="' . $type->slug . '">' . $type->name . '</a></li>';
+	    }
+	    echo $html;
+	?>
             
         </ul>
     </div>
     <script>
 
-	var markerGroups = {
-    
-        "a": [],
-        "b": [],
-        "c": []
-};
-function toggleGroup(type) {
-    for (var i = 0; i < markerGroups[type].length; i++) {
-        var marker = markerGroups[type][i];
-        if (!marker.getVisible()) {
-            marker.setVisible(true);
-        } else {
-            marker.setVisible(false);
-        }
-    }
+//	var markerGroups = {
+//
+//        "a": [],
+//        "b": [],
+//        "c": [],
+//	"d": []
+//};
+//console.log(markerGroups);
+
+
+var markerGroups = <?php
+
+foreach ($place_types as $type){
+    $types[$type->slug] = array();
 }
+
+echo json_encode( $types, JSON_HEX_QUOT | JSON_HEX_TAG  );
+
+
+?>;
+
+
+
+var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG ); ?>;
+//var markerGroups = [];
+
 	window.onload = function() {
 
 	    var bounds = new google.maps.LatLngBounds();
-	    var latlng = new google.maps.LatLng(<?php echo trim($current_post_location[0]) ?>, <?php echo trim($current_post_location[1]) ?>);
-	    var map = new google.maps.Map(document.getElementById('map'), {
-		center: latlng,
-		zoom: <?php echo trim($current_post_location[2]) ?>,
-		mapTypeId: google.maps.MapTypeId.<?php echo strtoupper(trim($current_post_location[3])); ?>
+	    
+    var map = new google.maps.Map(document.getElementById('map'), {
+
+		mapTypeId: google.maps.MapTypeId.roadmap
 	    });
+
 	    var infowindow;
 	    for (var i = 0; i < markers.length; i++) {
 		var marker = new google.maps.Marker({
-		    position: new google.maps.LatLng(markers[i][0],markers[i][1] ),
+		    position: new google.maps.LatLng(markers[i].lat,markers[i].lng ),
 		    map: map,
-		    title: 'click to description',
-		    info: markers[i][5],
+		    title: markers[i].title,
+		    info: markers[i].title,
 		    icon: 'http://google.com/mapfiles/ms/micons/green-dot.png',
-		    type: markers[i][4]
+		    type: markers[i].type
 		});
-		console.log(markers[i][4]);
+		console.log(markers[i].type);
 
 		
  bounds.extend(marker.position);
 
+markerGroups[markers[i].type].push(marker);
 
 		(function(marker, i) {
-		    markerGroups[markers[i][4]].push(marker);
+
+		    
+
+		    
 		    google.maps.event.addListener(marker, 'click', function() {
 			if (infowindow) infowindow.close();
 			infowindow = new google.maps.InfoWindow({
@@ -132,8 +175,51 @@ function toggleGroup(type) {
 
 	    map.fitBounds(bounds);
 	};
+
+
+var toggle = (function toggle_markers(b){
+var toggle_buttons = document.querySelectorAll(b);
+for ( var i=0; i < toggle_buttons.length; i++ ) {
+    
+	    toggle_buttons[i].addEventListener( 'click', function(e){
+
+    var type = this.getAttribute('data-type');
+if(this.classList.contains('hidden')){
+    this.classList.remove('hidden');
+}else{
+    this.classList.add('hidden');
+    }
+
+
+    for (var i = 0; i < markerGroups[type].length; i++) {
+        var marker = markerGroups[type][i];
+        if (!marker.getVisible()) {
+            marker.setVisible(true);
+        } else {
+            marker.setVisible(false);
+        }
+    }
+}, false);
+};
+})('#map-legend a');
+
+
+//	function toggleGroup(type) {
+//
+//
+//    for (var i = 0; i < markerGroups[type].length; i++) {
+//        var marker = markerGroups[type][i];
+//        if (!marker.getVisible()) {
+//            marker.setVisible(true);
+//        } else {
+//            marker.setVisible(false);
+//        }
+//    }
+//}
+
     </script>
     <?php
     wp_enqueue_script( 'maps', 'http://maps.google.com/maps/api/js', array(), true );
+
     return $content;
 }

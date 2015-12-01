@@ -8,15 +8,18 @@ class Maptour {
 	    $post_type = 'map_place';
 
     public function __construct() {
+	add_action( 'init', array( $this, 'register_post_place' ) );
+	add_action( 'init', array( $this, 'register_taxonomy_place' ) );
 	if(is_admin()){
 	    $this->admin_setup();
 	}
+	
     }
 
     public function admin_setup() {
+	
+	
 	add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-	add_action( 'init', array( $this, 'register_post_place' ) );
-	add_action( 'init', array( $this, 'register_taxonomy_place' ) );
 	add_action( 'add_meta_boxes', array( $this, 'add_meta_box') );
 	add_action( 'save_post', array( $this, 'save_meta_box' ) );
     }
@@ -46,7 +49,7 @@ class Maptour {
 	    'labels' => $labels,
 	    'hierarchical' => false,
 	    'description' => __( 'places', 'mt' ),
-	    'supports' => array( 'title', 'editor','custom-fields' ),
+	    'supports' => array( 'title', 'editor','custom-fields', 'thumbnail' ),
 	    'public' => true,
 	    'show_ui' => true,
 	    'show_in_menu' => true,
