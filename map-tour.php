@@ -94,6 +94,8 @@ function toggleGroup(type) {
     }
 }
 	window.onload = function() {
+
+	    var bounds = new google.maps.LatLngBounds();
 	    var latlng = new google.maps.LatLng(<?php echo trim($current_post_location[0]) ?>, <?php echo trim($current_post_location[1]) ?>);
 	    var map = new google.maps.Map(document.getElementById('map'), {
 		center: latlng,
@@ -112,6 +114,10 @@ function toggleGroup(type) {
 		});
 		console.log(markers[i][4]);
 
+		
+ bounds.extend(marker.position);
+
+
 		(function(marker, i) {
 		    markerGroups[markers[i][4]].push(marker);
 		    google.maps.event.addListener(marker, 'click', function() {
@@ -123,6 +129,8 @@ function toggleGroup(type) {
 		    });
 		})(marker, i);
 	    }
+
+	    map.fitBounds(bounds);
 	};
     </script>
     <?php
