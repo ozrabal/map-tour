@@ -59,7 +59,9 @@ dump($place_types);
 	    $map_markers[$i]['lng'] = $page_location[1];
 	    $map_markers[$i]['title'] = get_the_title();
 	    $map_markers[$i]['description'] = get_the_content();
-	    $map_markers[$i]['image'] = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
+	    $image = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), 'thumbnail' );
+	    $map_markers[$i]['image'] = $image[0];
+	    //$map_markers[$i]['image'] = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
 	    $map_markers[$i]['url'] = get_permalink();
 	    $type = wp_get_post_terms( get_the_ID(), 'place_type', array( 'fields' => 'slugs') );
 	    $map_markers[$i]['type'] = $type[0];
@@ -142,7 +144,171 @@ var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG
 	    
     var map = new google.maps.Map(document.getElementById('map'), {
 
-		mapTypeId: google.maps.MapTypeId.roadmap
+		mapTypeId: google.maps.MapTypeId.roadmap,
+		styles:[
+    {
+        "featureType": "landscape",
+        "elementType": "all",
+        "stylers": [
+            {
+                "weight": "1.71"
+            },
+            {
+                "gamma": "1.48"
+            },
+            {
+                "lightness": "-17"
+            },
+            {
+                "saturation": "40"
+            },
+            {
+                "hue": "#00ffdb"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.man_made",
+        "elementType": "all",
+        "stylers": [
+            {
+                "saturation": "-50"
+            },
+            {
+                "lightness": "-10"
+            },
+            {
+                "gamma": "3.26"
+            },
+            {
+                "weight": "3.00"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.natural",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#e0efef"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "hue": "#1900ff"
+            },
+            {
+                "color": "#c0e8e8"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "all",
+        "stylers": [
+            {
+                "saturation": "27"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "lightness": 200
+            },
+            {
+                "visibility": "simplified"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        "featureType": "transit.line",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "lightness": 700
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#77c1bc"
+            },
+            {
+                "visibility": "on"
+            },
+            {
+                "lightness": "13"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "saturation": "19"
+            },
+            {
+                "hue": "#00b2ff"
+            },
+            {
+                "lightness": "-4"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "lightness": "31"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "labels.text",
+        "stylers": [
+            {
+                "color": "#3d3b38"
+            },
+            {
+                "visibility": "simplified"
+            },
+            {
+                "lightness": "20"
+            }
+        ]
+    }
+]
 	    });
 
 	    var infowindow;
@@ -151,7 +317,14 @@ var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG
 		    position: new google.maps.LatLng(markers[i].lat,markers[i].lng ),
 		    map: map,
 		    title: markers[i].title,
-		    info: markers[i].title,
+		    info: '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">'+markers[i].title+'</h1>'+
+      '<div id="bodyContent">'+
+      '<img src="'+markers[i].image+'" >'+markers[i].description+
+      '</div>'+
+      '</div>',
 		  
 		    icon: pinSymbol(markerGroups[markers[i].type].color),
 		    type: markers[i].type
@@ -159,7 +332,7 @@ var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG
 
 		console.log(markers[i].type);
 
-if(markerGroups[markers[i].type].default == 1){
+if(markerGroups[markers[i].type].default != 1){
     marker.setOptions({'opacity': 0.3,'strokeWeight':.1});
 }
 
@@ -185,6 +358,12 @@ markerGroups[markers[i].type].markers.push(marker);
 	    }
 
 	    map.fitBounds(bounds);
+
+
+	    
+
+
+
 	};
 
 console.log(map_markers);
@@ -256,7 +435,7 @@ function pinSymbol(color) {
         fillOpacity: 1,
         strokeColor: '#fff',
         strokeWeight: 2,
-        scale: .5,
+        scale: .7,
    };
 }
 

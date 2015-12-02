@@ -10,6 +10,7 @@ class Maptour {
     public function __construct() {
 	add_action( 'init', array( $this, 'register_post_place' ) );
 	add_action( 'init', array( $this, 'register_taxonomy_place' ) );
+add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 	if(is_admin()){
 	    $this->admin_setup();
 	}
@@ -22,6 +23,11 @@ class Maptour {
 	add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 	add_action( 'add_meta_boxes', array( $this, 'add_meta_box') );
 	add_action( 'save_post', array( $this, 'save_meta_box' ) );
+    }
+
+    public function enqueue_frontend_scripts() {
+	wp_enqueue_style( 'maptour',  MAPTOUR_PLUGIN_URL . 'css/maptour.css');
+	
     }
 
     public function admin_enqueue_scripts() {
