@@ -35,7 +35,7 @@ function get_pages_map( $content ) {
     }
     $place_types = get_terms( 'place_type' );
 
-dump($place_types);
+
 
     $map_args  = array(
 	'post_type'	=> 'map_place',
@@ -71,27 +71,19 @@ dump($place_types);
 	    //$markers[] = $page_location;
 	}
     }
-    dump($map_markers);
+    //dump($map_markers);
     //dump($markers);
     //dump($place_types);
     ?>
     <style>
-	.entry-content img, .comment-content img, .widget img {
-	    max-width: inherit;
-	}
-	#map {
-	    height: 600px;
-	    border: 0px solid #000;
-	}
-	#map-legend .hidden{
-	    opacity: .2;
-	}
+	
     </style>
     <script>
 	
 	
 	
     </script>
+    <div id="container-map">
     <div id="map"></div>
 
     <div class="siderbarmap">
@@ -113,6 +105,7 @@ dump($place_types);
 	?>
             
         </ul>
+    </div>
     </div>
     <script>
 
@@ -317,12 +310,11 @@ var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG
 		    position: new google.maps.LatLng(markers[i].lat,markers[i].lng ),
 		    map: map,
 		    title: markers[i].title,
-		    info: '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">'+markers[i].title+'</h1>'+
-      '<div id="bodyContent">'+
-      '<img src="'+markers[i].image+'" >'+markers[i].description+
+		    info: '<div class="infowindow">'+
+      '<h2>'+markers[i].title+'</h2>'+
+      ''+
+      '<div class="content">'+
+      '<img src="'+markers[i].image+'" class="post-thumbnail" >'+markers[i].description+
       '</div>'+
       '</div>',
 		  
@@ -374,7 +366,7 @@ var toggle_buttons = document.querySelectorAll(b);
 for ( var i=0; i < toggle_buttons.length; i++ ) {
 
 	    toggle_buttons[i].addEventListener( 'click', function(e){
-
+reducemap();
 
 	var type = this.getAttribute('data-type');
 
@@ -425,7 +417,10 @@ if(marker.type == type) {
 
 
 
-
+function reducemap() {
+    document.getElementById("container-map").setAttribute('class', 'full');
+    google.maps.event.trigger( map, "resize" );
+}
 
 function pinSymbol(color) {
     

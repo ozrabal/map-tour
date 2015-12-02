@@ -1,0 +1,72 @@
+.infowindow .post-thumbnail{
+    width: 100px;
+    float: left;
+    margin: 0 10px 10px 0;
+}
+.infowindow {
+    min-height: 200px;
+    width: 400px;
+}
+html { height: 100% }
+body { height: 100%; margin: 0px; padding: 0px }
+
+
+[role="complementary"]{
+    z-index: 0;
+}
+#container-map{
+    background: #ffffff;
+  
+        width: 100%;
+	
+	box-shadow: 0 1px 1px 0 rgba(50,50,50,.14);
+margin-bottom: 50px;
+}
+.siderbarmap{
+    width: 100%;
+	height: auto;
+	display: block;
+	clear: both;
+}
+
+#container-map.full{
+    background: #ffffff;
+  position: fixed;
+        top: 100px;
+        right: 50px;
+        bottom: 50px;
+        left: 50px;
+        z-index:  999 !important;
+	margin: 0;
+	box-shadow: 0 7px 15px 0 rgba(50,50,50,.14);
+width: auto;
+
+}
+#container-map.full .siderbarmap {
+    background: #ffffff;
+    z-index:  999 !important;
+    position: absolute;
+    margin: 10px;
+    top: 0;
+    right: 0;
+    width: 25%;
+}
+
+#map{
+    
+    
+    height: 600px;
+    display: block;
+}
+#container-map.full #map{
+    height: 100%;
+}
+
+
+.entry-content img, .comment-content img, .widget img {
+	    max-width: inherit;
+	}
+
+	#map-legend .hidden{
+	    opacity: .2;
+	}
