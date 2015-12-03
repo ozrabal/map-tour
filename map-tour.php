@@ -78,8 +78,8 @@ function get_pages_map( $content ) {
 
 
     <div id="map-pums" class="container-map">
-	<a href="" class="resize-small" data-map-container="map-pums">X</a>
-	<a href="" class="resize-big" data-map-container="map-pums"><?php _e('Bigger map', 'mt') ?></a>
+	<a href="" class="resize-small" data-map-container="map-pums"><i class="fa fa-times"></i></a>
+	<a href="" class="resize-big" data-map-container="map-pums"><?php _e('Bigger map ', 'mt') ?> <i class="fa fa-arrows-alt"></i></a>
     <div id="map"></div>
 
     <div class="siderbarmap">
@@ -140,12 +140,13 @@ var map_markers = [];
 
 var markers = <?php echo json_encode( $map_markers, JSON_HEX_QUOT | JSON_HEX_TAG ); ?>;
 //var markerGroups = [];
-
+var bounds;
+var map;
 	window.onload = function() {
 
-	    var bounds = new google.maps.LatLngBounds();
+	    bounds = new google.maps.LatLngBounds();
 	    
-    var map = new google.maps.Map(document.getElementById('map'), {
+     map = new google.maps.Map(document.getElementById('map'), {
 
 		mapTypeId: google.maps.MapTypeId.roadmap,
 		styles:[
@@ -436,6 +437,7 @@ var resizeBig = (function resizeBig(btn_class){
 	    var c = document.getElementById(this.getAttribute('data-map-container'));
 	    c.addClass('full');
 	    google.maps.event.trigger( map, "resize" );
+	    map.fitBounds(bounds);
 	    this.style.display = 'none';
 	    //c.firstElementChild.style.display = 'block';
 		    c.children[0].style.display = 'block';
@@ -452,6 +454,7 @@ var resizeSmall = (function resizeSmall(btn_class){
 	    var c = document.getElementById(this.getAttribute('data-map-container'));
 	    c.removeClass('full');
 	    google.maps.event.trigger( map, "resize" );
+	    map.fitBounds(bounds);
 	    this.style.display = 'none';
 	    c.children[1].style.display = 'block';
 	}, false);
@@ -465,12 +468,12 @@ var resizeSmall = (function resizeSmall(btn_class){
 function pinSymbol(color) {
     
     return {
-        path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
+        path: 'M25 0c-8.284 0-15 6.656-15 14.866 0 8.211 15 35.135 15 35.135s15-26.924 15-35.135c0-8.21-6.716-14.866-15-14.866zm-.049 19.312c-2.557 0-4.629-2.055-4.629-4.588 0-2.535 2.072-4.589 4.629-4.589 2.559 0 4.631 2.054 4.631 4.589 0 2.533-2.072 4.588-4.631 4.588z',
         fillColor: color,
         fillOpacity: 1,
         strokeColor: '#fff',
         strokeWeight: 2,
-        scale: .7,
+        scale: .9,
    };
 }
 

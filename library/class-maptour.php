@@ -26,7 +26,7 @@ class Maptour {
 
     public function enqueue_frontend_scripts() {
 	wp_enqueue_style( 'maptour',  MAPTOUR_PLUGIN_URL . 'css/maptour.css');
-	
+	wp_enqueue_style( 'font-avesome',  'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
     }
 
     public function admin_enqueue_scripts() {
