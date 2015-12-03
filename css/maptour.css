@@ -14,7 +14,7 @@ body { height: 100%; margin: 0px; padding: 0px }
 [role="complementary"]{
     z-index: 0;
 }
-#container-map{
+.container-map{
     background: #ffffff;
   
         width: 100%;
@@ -29,10 +29,10 @@ margin-bottom: 50px;
 	clear: both;
 }
 
-#container-map.full{
+.container-map.full{
     background: #ffffff;
   position: fixed;
-        top: 100px;
+        top: 50px;
         right: 50px;
         bottom: 50px;
         left: 50px;
@@ -42,7 +42,7 @@ margin-bottom: 50px;
 width: auto;
 
 }
-#container-map.full .siderbarmap {
+.container-map.full .siderbarmap {
     background: #ffffff;
     z-index:  999 !important;
     position: absolute;
@@ -51,14 +51,16 @@ width: auto;
     right: 0;
     width: 25%;
 }
-
+.resize-small {
+    display: none;
+}
 #map{
     
     
     height: 600px;
     display: block;
 }
-#container-map.full #map{
+.container-map.full #map{
     height: 100%;
 }
 

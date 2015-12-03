@@ -75,18 +75,15 @@ function get_pages_map( $content ) {
     //dump($markers);
     //dump($place_types);
     ?>
-    <style>
-	
-    </style>
-    <script>
-	
-	
-	
-    </script>
-    <div id="container-map">
+
+
+    <div id="map-pums" class="container-map">
+	<a href="" class="resize-small" data-map-container="map-pums">X</a>
+	<a href="" class="resize-big" data-map-container="map-pums"><?php _e('Bigger map', 'mt') ?></a>
     <div id="map"></div>
 
     <div class="siderbarmap">
+	
         <ul id="map-legend">
             <?php
 	    $html = '';
@@ -109,14 +106,27 @@ function get_pages_map( $content ) {
     </div>
     <script>
 
-//	var markerGroups = {
-//
-//        "a": [],
-//        "b": [],
-//        "c": [],
-//	"d": []
-//};
-//console.log(markerGroups);
+Element.prototype.hasClass = function (className) {
+    return new RegExp(' ' + className + ' ').test(' ' + this.className + ' ');
+};
+
+Element.prototype.addClass = function (className) {
+    if (!this.hasClass(className)) {
+        this.className += ' ' + className;
+    }
+    return this;
+};
+
+Element.prototype.removeClass = function (className) {
+    var newClass = ' ' + this.className.replace(/[\t\r\n]/g, ' ') + ' ';
+    if (this.hasClass(className)) {
+        while (newClass.indexOf( ' ' + className + ' ') >= 0) {
+            newClass = newClass.replace(' ' + className + ' ', ' ');
+        }
+        this.className = newClass.replace(/^\s+|\s+$/g, ' ');
+    }
+    return this;
+};
 
 
 var markerGroups = <?php
@@ -366,7 +376,7 @@ var toggle_buttons = document.querySelectorAll(b);
 for ( var i=0; i < toggle_buttons.length; i++ ) {
 
 	    toggle_buttons[i].addEventListener( 'click', function(e){
-reducemap();
+
 
 	var type = this.getAttribute('data-type');
 
@@ -417,10 +427,40 @@ if(marker.type == type) {
 
 
 
-function reducemap() {
-    document.getElementById("container-map").setAttribute('class', 'full');
-    google.maps.event.trigger( map, "resize" );
-}
+var resizeBig = (function resizeBig(btn_class){
+    var buttons = document.getElementsByClassName(btn_class);
+    for ( var i = 0, length = buttons.length; i < length; i++ ) {
+	buttons[i].addEventListener( 'click', function(e){
+	    e.preventDefault();
+	    //var container = this.getAttribute('data-map-container');
+	    var c = document.getElementById(this.getAttribute('data-map-container'));
+	    c.addClass('full');
+	    google.maps.event.trigger( map, "resize" );
+	    this.style.display = 'none';
+	    //c.firstElementChild.style.display = 'block';
+		    c.children[0].style.display = 'block';
+
+	}, false);
+    }
+})('resize-big');
+
+var resizeSmall = (function resizeSmall(btn_class){
+    var buttons = document.getElementsByClassName(btn_class);
+    for ( var i = 0, length = buttons.length; i < length; i++ ) {
+	buttons[i].addEventListener( 'click', function(e){
+	    e.preventDefault();
+	    var c = document.getElementById(this.getAttribute('data-map-container'));
+	    c.removeClass('full');
+	    google.maps.event.trigger( map, "resize" );
+	    this.style.display = 'none';
+	    c.children[1].style.display = 'block';
+	}, false);
+    }
+})('resize-small');
+
+
+
+
 
 function pinSymbol(color) {
     

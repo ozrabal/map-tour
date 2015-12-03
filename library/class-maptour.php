@@ -10,11 +10,10 @@ class Maptour {
     public function __construct() {
 	add_action( 'init', array( $this, 'register_post_place' ) );
 	add_action( 'init', array( $this, 'register_taxonomy_place' ) );
-add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
+	add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 	if(is_admin()){
 	    $this->admin_setup();
 	}
-	
     }
 
     public function admin_setup() {
@@ -128,7 +127,7 @@ add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 	echo $html;
     }
 
-    function save_meta_box( $post_id ) {
+    public function save_meta_box( $post_id ) {
 	if ( !filter_input( INPUT_POST, $this->plugin_name . '_nonce' ) ) {
 	    return;
 	}
@@ -153,5 +152,8 @@ add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 	$my_data = sanitize_text_field( filter_input( INPUT_POST, 'place_data' ) );
 	update_post_meta( $post_id, 'place_data', $my_data );
     }
+
+
+ 
 
 }
