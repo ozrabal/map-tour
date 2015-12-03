@@ -28,14 +28,30 @@ margin-bottom: 50px;
 	display: block;
 	clear: both;
 }
+#map-legend {
+    list-style: none;
+    margin: 10px 10px;
+    
+}
+#map-legend li{
 
+}
+#map-legend li a span {
+   line-height: 24px;
+font-size: 14px;
+}
+#map-legend li a svg {
+    height: 20px;
+    margin-right: 5px;
+}
 .container-map.full{
     background: #ffffff;
+    border: 35px solid #ffffff;
   position: fixed;
-        top: 50px;
-        right: 50px;
-        bottom: 50px;
-        left: 50px;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
         z-index:  999 !important;
 	margin: 0;
 	box-shadow: 0 7px 15px 0 rgba(50,50,50,.14);
@@ -50,6 +66,7 @@ width: auto;
     top: 0;
     right: 0;
     width: 25%;
+    box-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.3);
 }
 .resize-small {
     display: none;
@@ -57,10 +74,10 @@ position: absolute;
 top: -30px;
 right: -30px;
 background: #1F9A9A;
-padding: 2px 5px;
+padding: 2px 5px 4px 5px;
 z-index: 100;
 color: #fff;
-box-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.3);
+xbox-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.3);
 }
 .resize-small .fa{
     font-size: 24px;
@@ -100,7 +117,18 @@ min-width: 39px;
 .entry-content img, .comment-content img, .widget img {
 	    max-width: inherit;
 	}
-
+	#map-legend .hidden:hover{
+	    color: #1F9A9A;
+	}
+	#map-legend .hidden:hover svg{
+	    opacity: 1;
+	}
 	#map-legend .hidden{
+	    color: inherit;
+	}
+	#map-legend .hidden svg{
 	    opacity: .2;
 	}
+
+
+	

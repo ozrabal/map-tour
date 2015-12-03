@@ -96,7 +96,9 @@ function get_pages_map( $content ) {
 		if($type_description[1] == 'default'){
 		    $hidden = '';
 		}
-		$html .= '<li><a class="' . $hidden . '" href="#' . $type->slug . '" data-type="' . $type->slug . '">' . $type->name . '</a></li>';
+		$html .= '<li><a id="'.$type->slug.'" class="' . $hidden . '" href="#' . $type->slug . '" data-type="' . $type->slug . '">'
+			. '<svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" fill="'.$types[$type->slug]['color'].'" viewBox="0 0 50 50" overflow="inherit"><path d="M25.015 2.4c-7.8 0-14.121 6.204-14.121 13.854 0 7.652 14.121 32.746 14.121 32.746s14.122-25.094 14.122-32.746c0-7.65-6.325-13.854-14.122-13.854z"/></svg>'
+			. '<span>' . $type->name . '</span></a></li>';
 	    }
 	    echo $html;
 	?>
@@ -327,7 +329,7 @@ var map;
       '<div class="content">'+
       '<img src="'+markers[i].image+'" class="post-thumbnail" >'+markers[i].description+
       '</div>'+
-      '</div>',
+      '<a >Poprzedni</a> <a>Następny</a></div>',
 		  
 		    icon: pinSymbol(markerGroups[markers[i].type].color),
 		    type: markers[i].type
@@ -350,7 +352,8 @@ markerGroups[markers[i].type].markers.push(marker);
 		    
 
 		    
-		    google.maps.event.addListener(marker, 'click', function() {
+		    google.maps.event.addListener(marker, 'click', function(e) {
+			
 			if (infowindow) infowindow.close();
 			infowindow = new google.maps.InfoWindow({
 			    content: this.info
@@ -377,7 +380,7 @@ var toggle_buttons = document.querySelectorAll(b);
 for ( var i=0; i < toggle_buttons.length; i++ ) {
 
 	    toggle_buttons[i].addEventListener( 'click', function(e){
-
+e.preventDefault();
 
 	var type = this.getAttribute('data-type');
 
