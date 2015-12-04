@@ -26,13 +26,22 @@ add_action( 'plugins_loaded', function() {
 
 
 
+add_shortcode('get_map', 'get_pages_map');
 
 
-add_action( 'the_content', 'get_pages_map' );
-function get_pages_map( $content ) {
+
+
+//add_action( 'the_content', 'get_pages_map' );
+
+
+
+function get_pages_map(  ) {
     if ( !is_single() && !is_page() ) {
 	return;
     }
+    global $post;
+    $content = $post->content;
+
     $place_types = get_terms( 'place_type' );
 
 
