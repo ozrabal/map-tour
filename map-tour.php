@@ -326,19 +326,39 @@ var map;
 ]
 	    });
 
+
+function create_infowindow(i){
+    var html = '<div class="infowindow">'+
+            '<h2>'+markers[i].title+'</h2>'+content+infowindowNavigation(i)+
+            '</div>';
+    return html;
+}
+
+function infowindowNavigation(i){
+    
+    
+    var next = '<a class="btn_next" href="javascript:myclick('+(i+1)+');">Następny</a>';
+
+    var previous = '<a class="btn_previous" href="javascript:myclick('+(i-1)+');">Poprzedni</a>';
+    
+    
+
+}
+
 	    var infowindow;
 	    for (var i = 0; i < markers.length; i++) {
 		var marker = new google.maps.Marker({
 		    position: new google.maps.LatLng(markers[i].lat,markers[i].lng ),
 		    map: map,
 		    title: markers[i].title,
-		    info: '<div class="infowindow">'+
-      '<h2>'+markers[i].title+'</h2>'+
-      ''+
-      '<div class="content">'+
-      '<img src="'+markers[i].image+'" class="post-thumbnail" >'+markers[i].description+
-      '</div>'+
-      '<a >Poprzedni</a> <a>Następny</a></div>',
+		    info: create_infowindow(i),
+//                            '<div class="infowindow">'+
+//      '<h2>'+markers[i].title+'</h2>'+
+//      ''+
+//      '<div class="content">'+
+//      '<img src="'+markers[i].image+'" class="post-thumbnail" >'+markers[i].description+
+//      '</div>'+
+//      '<a href="javascript:myclick('+(i-1)+');">Poprzedni</a> <a class="btn_next" href="javascript:myclick('+(i+1)+');">Następny</a></div>',
 		  
 		    icon: pinSymbol(markerGroups[markers[i].type].color),
 		    type: markers[i].type
@@ -473,8 +493,20 @@ var resizeSmall = (function resizeSmall(btn_class){
     }
 })('resize-small');
 
+//
+//var buttons = document.getElementsByClassName('btn_next');
+//for ( var i = 0, length = buttons.length; i < length; i++ ) {
+//    buttons[i].addEventListener( 'click', function(e){
+//        console.log(this);
+//    });
+//    
+//    }
 
 
+function myclick(index) {
+    
+   google.maps.event.trigger(map_markers[index],"click");
+}
 
 
 function pinSymbol(color) {
