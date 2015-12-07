@@ -24,8 +24,8 @@ Element.prototype.removeClass = function (className) {
 
 var map_markers = [];
 
-//var bounds;
-//var map;
+var bounds;
+var map;
 
 
 
@@ -75,71 +75,66 @@ function myclick(index) {
 }
 
 
+function pinSymbol(color) {
+
+    return {
+        path: 'M25 0c-8.284 0-15 6.656-15 14.866 0 8.211 15 35.135 15 35.135s15-26.924 15-35.135c0-8.21-6.716-14.866-15-14.866zm-.049 19.312c-2.557 0-4.629-2.055-4.629-4.588 0-2.535 2.072-4.589 4.629-4.589 2.559 0 4.631 2.054 4.631 4.589 0 2.533-2.072 4.588-4.631 4.588z',
+        fillColor: color,
+        fillOpacity: 1,
+        strokeColor: '#fff',
+        strokeWeight: 2,
+        scale: .9,
+   };
+}
 
 
 
 
-//var mapStyle = {'s':1};
 
-//console.log(mapStyle);
+
 
 //900000344400000991998808
 
-var params = params || {};
+var maptour = (function(window, document, map){
 
-var maptour = (function(window, document, google, markers, mapStyle, params){
-    
-    console.log(params);
     var 
-       _params = params || {},
         bounds,
         map,
-        google = google,
-        _mapStyle = mapStyle,
-        _markers = markers,
-        infowindow,
         _element = {
             mapContainer : document.getElementById( 'map' )
         },
         _initMap = function(m){
             return new google.maps.Map(m, {
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
-		styles: _mapStyle
+		styles: map_style
 	    })
-        },
-        _position = function(lat, lng ) {
-            return new google.maps.LatLng( lat, lng )
-        },
-        _pinSymbol = function(color) {
-            return {
-                path: 'M25 0c-8.284 0-15 6.656-15 14.866 0 8.211 15 35.135 15 35.135s15-26.924 15-35.135c0-8.21-6.716-14.866-15-14.866zm-.049 19.312c-2.557 0-4.629-2.055-4.629-4.588 0-2.535 2.072-4.589 4.629-4.589 2.559 0 4.631 2.054 4.631 4.589 0 2.533-2.072 4.588-4.631 4.588z',
-                fillColor: color,
-                fillOpacity: 1,
-                strokeColor: '#fff',
-                strokeWeight: 2,
-                scale: .9,
-            };
-        },
-        _placeMarker = function(i){
-            return new google.maps.Marker({
-		    position: _position( _markers[i].lat, _markers[i].lng ),
-		    map: map,
-		    title: markers[i].title,
-		    info: create_infowindow(i),
-		    icon: _pinSymbol(markerGroups[markers[i].type].color),
-		    type: markers[i].type
-		});
-        }
-        
+        };
+
         window.onload = function() {
             bounds = new google.maps.LatLngBounds();
             map = _initMap( _element.mapContainer );
-            
-            for (var i = 0; i < _markers.length; i++) {
-                marker = _placeMarker(i);
-		
+//     map = new google.maps.Map(document.getElementById('map'), {
+//
+//		mapTypeId: google.maps.MapTypeId.roadmap,
+//		styles: map_style
+//	    });
 
-		
+
+
+
+
+	    var infowindow;
+	    for (var i = 0; i < markers.length; i++) {
+		var marker = new google.maps.Marker({
+		    position: new google.maps.LatLng(markers[i].lat,markers[i].lng ),
+		    map: map,
+		    title: markers[i].title,
+		    info: create_infowindow(i),
+		    icon: pinSymbol(markerGroups[markers[i].type].color),
+		    type: markers[i].type
+		});
+
+		console.log(markers[i].type);
 
 if(markerGroups[markers[i].type].default != 1){
     marker.setOptions({'opacity': 0.3,'strokeWeight':.1});
@@ -174,7 +169,7 @@ markerGroups[markers[i].type].markers.push(marker);
 	};
         
         return map;
-})(window, document, google || {}, markers || {}, mapStyle || {}, params );
+})(window, document, maptour || {} );
 
 
 

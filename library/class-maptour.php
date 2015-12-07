@@ -29,7 +29,7 @@ class Maptour {
 	wp_enqueue_script( 'maps', 'http://maps.google.com/maps/api/js', array(), true );
 	wp_enqueue_style( 'maptour',  MAPTOUR_PLUGIN_URL . 'css/maptour.css');
 	wp_enqueue_style( 'font-avesome',  'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-	wp_enqueue_script( 'maptour.app', MAPTOUR_PLUGIN_URL . 'js/frontend-map.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
+	wp_enqueue_script( 'maptour.app', MAPTOUR_PLUGIN_URL . 'js/frontend-map.js' , array( 'jquery', 'maps', 'maptour.mapstyle' ), MAPTOUR_VERSION, true );
 	$this->_enqueue_map_styles_js();
     }
 
@@ -184,7 +184,7 @@ class Maptour {
 	    $map_markers[$i]['lng'] = $page_location[1];
 	    $map_markers[$i]['title'] = get_the_title();
 	    $map_markers[$i]['description'] = get_the_content();
-	    $image = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), 'thumbnail' );
+	    $image = wp_get_attachment_image_src( get_post_thumbnail_id(get_the_ID()), 'thumbnail' );
 	    $map_markers[$i]['image'] = $image[0];
 	    //$map_markers[$i]['image'] = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
 	    $map_markers[$i]['url'] = get_permalink();

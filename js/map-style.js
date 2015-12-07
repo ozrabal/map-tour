@@ -1,4 +1,4 @@
-var map_style = [
+var mapStyle = [
     {
         "featureType": "landscape",
         "elementType": "all",
