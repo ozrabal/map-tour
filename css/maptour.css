@@ -1,7 +1,7 @@
 .infowindow .post-thumbnail{
-    width: 100px;
-    float: left;
-    margin: 0 10px 10px 0;
+width: 150px;
+float: left;
+margin: 4px 10px 10px 0;
 }
 .infowindow {
     min-height: 200px;
@@ -129,8 +129,14 @@ min-width: 39px;
 	#map-legend .hidden svg{
 	    opacity: .2;
 	}
-
-
+	.infowindow h2{
+	    margin: 0 0 5px 0;
+font-size: 18px;
+	}
+	.infowindow .content{
+	    font-size: 12px;
+line-height: 1.3em;
+	}
 
 	.infowindow-navigation {
 	    bottom: 0px;
@@ -138,6 +144,19 @@ min-width: 39px;
 position: absolute;
 
 	}
-	.infowindow-navigation a {
+	.infowindow-navigation a,
+	.infowindow-navigation-header{
+	        padding: 1px 5px 4px;
+    line-height: 14px;
+    font-size: 12px;
+    background-color: #f3fafb;
+    display: block;
+    float: left;
+}
 
-	}
+.infowindow-navigation .btn-previous {
+margin-right: 2px;
+}
+.infowindow-navigation-header{
+   margin-right: 2px;
+}

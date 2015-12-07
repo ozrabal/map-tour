@@ -155,6 +155,8 @@ class Maptour {
 	update_post_meta( $post_id, 'place_data', $my_data );
     }
 
+
+    
 function get_map(  ) {
     if ( !is_single() && !is_page() ) {
 	return;
@@ -444,9 +446,11 @@ function create_infowindow(i){
 }
 
 function infowindowContent(i){
-    var html = '<div class="content">'+
-	    '<img src="'+markers[i].image+'" class="post-thumbnail" >'+markers[i].description+
-'</div>';
+    var html = '<div class="content">';
+    if(markers[i].image){
+	    html += '<img src="'+markers[i].image+'" class="post-thumbnail" >';
+	}
+	    html += markers[i].description+'</div>';
 
 
 return html;
@@ -454,8 +458,8 @@ return html;
 
 
 function infowindowNavigation(i){
-    var next = '<a class="btn_next" href="javascript:myclick('+(i+1)+');">Następny</a>';
-    var previous = '<a class="btn_previous" href="javascript:myclick('+(i-1)+');">Poprzedni</a>';
+    var next = '<a class="btn-next" href="javascript:myclick('+(i+1)+');"><i class="fa fa-long-arrow-right"></i></a>';
+    var previous = '<a class="btn-previous" href="javascript:myclick('+(i-1)+');"><i class="fa fa-long-arrow-left"></i></a>';
      if( i > 0 && i < markers.length ){
 	links = previous + next;
     }
@@ -466,7 +470,7 @@ function infowindowNavigation(i){
     if( i == 0  ){
 	links = next;
     }
-var html = '<div class="infowindow-navigation">'+links+'</div>';
+var html = '<div class="infowindow-navigation"><span class="infowindow-navigation-header">Places navigation </span>'+links+'</div>';
     return html;
 
 

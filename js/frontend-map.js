@@ -19,3 +19,8 @@ Element.prototype.removeClass = function (className) {
     }
     return this;
 };
+
+
+
+
+
