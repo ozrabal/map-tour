@@ -131,4 +131,13 @@ min-width: 39px;
 	}
 
 
-	
+
+	.infowindow-navigation {
+	    bottom: 0px;
+	    right: 0;
+position: absolute;
+
+	}
+	.infowindow-navigation a {
+
+	}
