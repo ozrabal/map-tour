@@ -41,6 +41,10 @@ var maptour = (function(window, document, google, markers, mapStyle, params){
             mapContainer : document.getElementById( 'map' )
         };
 
+
+
+
+
         initMap = function(m){
             return new google.maps.Map(m, {
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -200,4 +204,38 @@ var html = '<div class="infowindow-navigation"><span class="infowindow-navigatio
 	};
         
         return map;
-})(window, document, google || {}, markers || {}, mapStyle || {}, params );
+    });
+//})(window, document, google || {}, markers || {}, mapStyle || {}, params );
+
+
+var Maptour = (function(document, window, google){
+    
+    var settings = {
+        mapTypeId : google.maps.MapTypeId.ROADMAP
+    };
+    
+    var element = {
+        mapContainer : document.getElementById( 'map' )
+    };
+    
+    var map;
+    var Maptour = {
+    
+        
+        init : function(){
+          map = new google.maps.Map(element.mapContainer, {
+		mapTypeId: settings.mapTypeId,
+	
+	    })
+        },
+        
+            
+    }
+    
+    window.onload = function() {
+        bounds = new google.maps.LatLngBounds();
+        Maptour.init();
+        map.fitBounds(bounds);
+    }
+    
+}(document,window, google));
