@@ -165,6 +165,7 @@ class Maptour {
 	$map_args  = array(
 	'post_type'	=> 'map_place',
 	'post_status'	=> 'publish',
+	    'posts_per_page'=> 100,
 	'meta_query' => array(
 	    array(
 		'key'	    => 'place_data',

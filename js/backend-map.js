@@ -6,7 +6,7 @@ function initialize() {
     var geocoder;
     var map = [];
     var markers = [];
-    var default_zoom = 5;
+    var default_zoom = 15;
     var default_lat = 52.4064;
     var default_lng = 16.9252;
     var default_type = 'roadmap';
