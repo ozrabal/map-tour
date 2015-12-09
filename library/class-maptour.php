@@ -206,7 +206,7 @@ class Maptour {
     private function _enqueue_map_places_js(){
 	$map_markers = $this->get_map_places();
 	$markers_json = array(
-	    'l10n_print_after' => 'markers = ' . json_encode( $map_markers ) . ';'
+	    'l10n_print_after' => 'var markers = ' . json_encode( $map_markers ) . ';'
 	);
 	wp_localize_script('maptour.app', 'markers', $markers_json);
     }
