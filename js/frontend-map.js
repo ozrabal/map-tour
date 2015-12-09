@@ -66,10 +66,45 @@ var Maptour = (function(document, window, google){
 	    },
 	    infowindow: {
 		content: function(point, index){
+                    
+                    
+                    
+//                   
+//                   
+//                      if( index > 0  ){
+//                          console.log('np');
+//			    next = '<a class="btn-next" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)+1)+');"><i class="fa fa-long-arrow-right"></i></a>';
+//		    previous = '<a class="btn-previous" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)-1)+');"><i class="fa fa-long-arrow-left"></i></a>';
+//		     links = previous + next;
+//                     
+//                     }  
+//                        if( parseInt(index) == settings.markers.length-1 ){
+//                                next = '<a class="btn-next" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)+1)+');"><i class="fa fa-long-arrow-right"></i></a>';
+//		    previous = '<a class="btn-previous" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)-1)+');"><i class="fa fa-long-arrow-left"></i></a>';
+//		     
+//		 	links = previous;
+//                        
+//		    }
+//                    
+//                        
+//                        if( parseInt(index) == 0  ){
+//                                next = '<a class="btn-next" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)+1)+');"><i class="fa fa-long-arrow-right"></i></a>';
+//		    previous = '<a class="btn-previous" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)-1)+');"><i class="fa fa-long-arrow-left"></i></a>';
+//		     
+//			links = next;
+//                     }
+//                
+//		    var h = '<div class="infowindow-navigation"><span class="infowindow-navigation-header">Places navigation </span>'+links+'</div>';
+//		    
+//                    
+                    
 		    var html = '<div class="infowindow" id="infowindow-' + point.id + '">'+
 			    this.title(point.title) +
 			    this.image(point.image) +
 			    this.description(point.description) +
+                            this.navigation(index)+
+                    //'<a class="btn-next" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)+1)+');"><i class="fa fa-long-arrow-right"></i></a>'+
+		    //h+
 			'</div>';
 		    return html;
 		},
@@ -77,56 +112,72 @@ var Maptour = (function(document, window, google){
 		   return '<h2>' + title + '</h2>';
 		},
 		description : function(description){
+                    if(description){
 		   return description;
+               }
+               return '';
 		},
 		image: function(image){
-		   return '<img src="' + image + '" class="post-thumbnail" >';
+                    if ( image ) {
+                    return '<img src="' + image + '" class="post-thumbnail" >';
+                    }
+                    return '';
+                    
 		},
 		listener : function(marker,point){
 		    google.maps.event.addListener(marker, 'click', function(e) {
+                        
 			//marker.setOptions({'opacity': 1,'strokeWeight':1});
 		    if (iwindow) iwindow.close();
-			iwindow = Maptour.marker.infowindow.create(marker, point);
+                            //iwindow = Maptour.marker.infowindow.create( point, index);
+                           iwindow = new google.maps.InfoWindow({
+			    content: this.info
+			});
 			iwindow.open(Maptour.map, marker);
+                        //Maptour.marker.open(Maptour.map, marker);
 		    });
 		},
-		create: function(marker, point){
+		create: function(point, index){
+                    
 		    return new google.maps.InfoWindow({
-			content: Maptour.marker.infowindow.content(point)
+			content: Maptour.marker.infowindow.content(point, index)
 		    });
 		},
-		navigation : function(i){
-		    var next = '<a class="btn-next" href="javascript:myclick('+(i+1)+');"><i class="fa fa-long-arrow-right"></i></a>';
-		    var previous = '<a class="btn-previous" href="javascript:myclick('+(i-1)+');"><i class="fa fa-long-arrow-left"></i></a>';
-		     if( i > 0 && i < markers.length ){
+		navigation : function(index){
+		    var next = '<a class="btn-next" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)+1)+');"><i class="fa fa-long-arrow-right"></i></a>';
+		    var previous = '<a class="btn-previous" href="javascript:Maptour.marker.infowindow.nav('+(parseInt(index)-1)+');"><i class="fa fa-long-arrow-left"></i></a>';
+		    if( parseInt(index) > 0 && parseInt(index) < settings.markers.length ){
 			links = previous + next;
+                    }  
+                    if( parseInt(index) == settings.markers.length-1 ){
+		 	links = previous;    
 		    }
-		    if( i == markers.length-1 ){
-			links = previous;
-		    }
-
-		    if( i == 0  ){
+                    
+                        
+                        if( parseInt(index) == 0  ){
 			links = next;
-		    }
+                     }
+                
 		    var html = '<div class="infowindow-navigation"><span class="infowindow-navigation-header">Places navigation </span>'+links+'</div>';
 		    return html;
 		},
-		nav : function(){
-		    google.maps.event.trigger(map_markers[index],"click");
+		nav : function(index){
+		    google.maps.event.trigger(mapMarkers[index],"click");
 		}
 	    },
 	    
 	    place : function(point, index){
+                
 		return new google.maps.Marker({
 		    position: Maptour.marker.position( point.lat, point.lng ),
 		    map: Maptour.map,
 		    title: point.title,
-		    info: Maptour.marker.infowindow.create(point, index),
+		    //info: Maptour.marker.infowindow.create(point, index),
+                    info: Maptour.marker.infowindow.content(point, index),
 		    icon: Maptour.marker.icon(markerGroups[point.type].color),
 		    type: point.type
 		});
 	    }
-
 	},
 	
 	placeMarkers : function(markers){
@@ -137,10 +188,10 @@ var Maptour = (function(document, window, google){
 		if(markerGroups[markers[i].type].default !== 1){
 		    currentMarker.setOptions({'opacity': 0.3,'strokeWeight':.1});
 		}
-		Maptour.marker.infowindow.listener(currentMarker, markers[i]);
+                
+		Maptour.marker.infowindow.listener(currentMarker, markers[i],i);
 		mapMarkers.push(currentMarker);
 	    }
-
 	},
 	
         toggle_markers: function(handler) {
@@ -172,8 +223,9 @@ var Maptour = (function(document, window, google){
 	    for ( var i = 0, length = buttons.length; i < length; i++ ) {
 		buttons[i].addEventListener( 'click', function(e){
 		    e.preventDefault();
-		    document.getElementById('sidebar').style.display='none';
-		    document.getElementById('header').style.display='none';
+                    var event = document.createEvent('event');
+		    //document.getElementById('sidebar').style.display='none';
+		    //document.getElementById('header').style.display='none';
 		    //var container = this.getAttribute('data-map-container');
 		    var c = document.getElementById(this.getAttribute('data-map-container'));
 		    c.addClass('full');
@@ -189,8 +241,8 @@ var Maptour = (function(document, window, google){
 	    for ( var i = 0, length = buttons.length; i < length; i++ ) {
 		buttons[i].addEventListener( 'click', function(e){
 		    e.preventDefault();
-		    document.getElementById('sidebar').style.display='block';
-		    document.getElementById('header').style.display='block';
+		    //document.getElementById('sidebar').style.display='block';
+		    //document.getElementById('header').style.display='block';
 		    var c = document.getElementById(this.getAttribute('data-map-container'));
 		    c.removeClass('full');
 		    google.maps.event.trigger( Maptour.map, "resize" );
@@ -200,7 +252,7 @@ var Maptour = (function(document, window, google){
 		}, false);
 	    }
 	}
-    }
+    };
        
     window.onload = function() {
         bounds = new google.maps.LatLngBounds();
@@ -211,5 +263,5 @@ var Maptour = (function(document, window, google){
 	Maptour.popupOpen(element.popupOpenHandler);
 	Maptour.popupClose(element.popupCloseHandler);
     };
-    
+    return Maptour;
 }(document, window, google, markers));

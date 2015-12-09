@@ -162,3 +162,21 @@ var mapStyle = [
         ]
     }
 ];
+
+
+//var buttonsO = document.getElementsByClassName('resize-big');
+//for ( var i = 0, length = buttonsO.length; i < length; i++ ) {	
+//    buttonsO[i].addEventListener( 'click', function(e){
+//        e.preventDefault();
+//        document.getElementById('sidebar').style.display='none';
+//        document.getElementById('header').style.display='none';
+//    });
+//}
+//var buttonsC = document.getElementsByClassName('resize-big');
+//for ( var i = 0, length = buttonsC.length; i < length; i++ ) {	
+//    buttonsC[i].addEventListener( 'click', function(e){
+//        e.preventDefault();
+//        document.getElementById('sidebar').style.display='block';
+//        document.getElementById('header').style.display='block';
+//    });
+//}

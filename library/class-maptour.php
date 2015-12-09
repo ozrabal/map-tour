@@ -242,7 +242,7 @@ class Maptour {
 		    $types[$type->slug]['color'] = $type_description[0];
 		    $types[$type->slug]['default'] = isset($type_description[1])?1:0;
 		    $hidden = 'hidden';
-		    if($type_description[1] == 'default'){
+		    if(isset($type_description[1]) && $type_description[1] == 'default'){
 			$hidden = '';
 		    }
 		    $html .= '<li><a id="'.$type->slug.'" class="' . $hidden . '" href="#' . $type->slug . '" data-type="' . $type->slug . '">'
