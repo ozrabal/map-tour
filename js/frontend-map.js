@@ -26,7 +26,7 @@ function myclick(index) {
 }
 var map_markers = [];
 var params = params || {};
-var maptour = (function(window, document, google, markers, mapStyle, params){
+var smaptour = (function(window, document, google, markers, mapStyle, params){
     
     console.log(params);
     var 
@@ -150,6 +150,7 @@ var html = '<div class="infowindow-navigation"><span class="infowindow-navigatio
 		}, false);
 	    };
 	})('#map-legend a');
+	
 	var resizeBig = (function resizeBig(btn_class){
 	    var buttons = document.getElementsByClassName(btn_class);
 	    
@@ -169,6 +170,7 @@ var html = '<div class="infowindow-navigation"><span class="infowindow-navigatio
 		}, false);
 	    }
 	})('resize-big');
+	
 	var resizeSmall = (function resizeSmall(btn_class){
 	    var buttons = document.getElementsByClassName(btn_class);
 	    for ( var i = 0, length = buttons.length; i < length; i++ ) {
@@ -218,12 +220,16 @@ var Maptour = (function(document, window, google){
     };
     
     var element = {
-        mapContainer : document.getElementById( 'map' )
+        mapContainer : document.getElementById( 'map' ),
+	markerToggleHandler: document.querySelectorAll('#map-legend a'),
+	popupOpenHandler : document.getElementsByClassName('resize-big'),
+	popupCloseHandler : document.getElementsByClassName('resize-small')
     };
     
     var map,
 	bounds,
-	iwindow
+	iwindow,
+	mapMarkers = []
 	;
 	
     var Maptour = {
@@ -268,6 +274,7 @@ var Maptour = (function(document, window, google){
 		},
 		listener : function(marker,point){
 		    google.maps.event.addListener(marker, 'click', function(e) {
+			//marker.setOptions({'opacity': 1,'strokeWeight':1});
 		    if (iwindow) iwindow.close();
 			iwindow = Maptour.marker.infowindow.create(marker, point);
 			iwindow.open(Maptour.map, marker);
@@ -279,6 +286,7 @@ var Maptour = (function(document, window, google){
 		    });
 		}
 	    },
+	    
 	    place : function(point, index){
 		return new google.maps.Marker({
 		    position: Maptour.marker.position( point.lat, point.lng ),
@@ -292,27 +300,87 @@ var Maptour = (function(document, window, google){
 
 	},
 	
-	
 	placeMarkers : function(markers){
 	    for (var i = 0; i < markers.length; i++) {
 		currentMarker = Maptour.marker.place( markers[i], i );
+		
 		bounds.extend(currentMarker.position);
-		if(markerGroups[markers[i].type].default != 1){
+		if(markerGroups[markers[i].type].default !== 1){
 		    currentMarker.setOptions({'opacity': 0.3,'strokeWeight':.1});
 		}
 		Maptour.marker.infowindow.listener(currentMarker, markers[i]);
+		mapMarkers.push(currentMarker);
 	    }
-	    //console.log(markerGroups);
+
+	},
+	
+        toggle_markers: function(handler) {
+	    for ( var i=0, l = handler.length; i < l; i++ ) {
+		var currentHandler = handler[i];
+		currentHandler.addEventListener( 'click', function(e){
+		    e.preventDefault();
+		    var type = this.getAttribute('data-type');
+		    for ( var i=0; i < l; i++ ) {
+			currentHandler.setAttribute('class', 'hidden');
+			if(currentHandler.getAttribute('data-type') == type){
+			    currentHandler.setAttribute('class', '');
+			}
+		    }
+		    for (var i = 0; i < mapMarkers.length; i++) {
+			var marker = mapMarkers[i];
+			if(marker.type === type) {
+			    marker.setVisible(true);
+			    marker.setOptions({'opacity': 1, 'strokeWeight':1});
+			}else{
+			    marker.setOptions({'opacity': 0.3,'strokeWeight':.1});
+			}
+		    }
+		}, false);
+	    }
+	},
+
+	popupOpen : function(buttons){
+	    for ( var i = 0, length = buttons.length; i < length; i++ ) {
+		buttons[i].addEventListener( 'click', function(e){
+		    e.preventDefault();
+		    document.getElementById('sidebar').style.display='none';
+		    document.getElementById('header').style.display='none';
+		    //var container = this.getAttribute('data-map-container');
+		    var c = document.getElementById(this.getAttribute('data-map-container'));
+		    c.addClass('full');
+		    google.maps.event.trigger( Maptour.map, "resize" );
+		    Maptour.map.fitBounds(bounds);
+		    this.style.display = 'none';
+		    //c.firstElementChild.style.display = 'block';
+		    c.children[0].style.display = 'block';
+		}, false);
+	    }
+	},
+	popupClose : function(buttons){
+	    for ( var i = 0, length = buttons.length; i < length; i++ ) {
+		buttons[i].addEventListener( 'click', function(e){
+		    e.preventDefault();
+		    document.getElementById('sidebar').style.display='block';
+		    document.getElementById('header').style.display='block';
+		    var c = document.getElementById(this.getAttribute('data-map-container'));
+		    c.removeClass('full');
+		    google.maps.event.trigger( Maptour.map, "resize" );
+		    Maptour.map.fitBounds(bounds);
+		    this.style.display = 'none';
+		    c.children[1].style.display = 'block';
+		}, false);
+	    }
 	}
-        
-            
-    };
-    
+    }
+       
     window.onload = function() {
         bounds = new google.maps.LatLngBounds();
         Maptour.init();
 	Maptour.placeMarkers(settings.markers);
         Maptour.map.fitBounds(bounds);
+	Maptour.toggle_markers(element.markerToggleHandler);
+	Maptour.popupOpen(element.popupOpenHandler);
+	Maptour.popupClose(element.popupCloseHandler);
     };
     
 }(document,window, google, markers));
