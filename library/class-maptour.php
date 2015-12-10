@@ -29,8 +29,9 @@ class Maptour {
 	wp_enqueue_script( 'maps', 'http://maps.google.com/maps/api/js', array(), true );
 	wp_enqueue_style( 'maptour',  MAPTOUR_PLUGIN_URL . 'css/maptour.css');
 	wp_enqueue_style( 'font-avesome',  'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-	wp_enqueue_script( 'maptour.app', MAPTOUR_PLUGIN_URL . 'js/frontend-map.js' , array( 'jquery', 'maps', 'maptour.mapstyle' ), MAPTOUR_VERSION, true );
 	$this->_enqueue_map_styles_js();
+	wp_enqueue_script( 'maptour.app', MAPTOUR_PLUGIN_URL . 'js/frontend-map.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
+	
     }
 
     public function admin_enqueue_scripts() {
@@ -213,9 +214,9 @@ class Maptour {
 
 
     private function _enqueue_map_styles_js(){
-
-	wp_enqueue_script( 'maptour.mapstyle', MAPTOUR_PLUGIN_URL . 'js/map-style.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
-	
+	if(file_exists(get_template_directory() . '/map-style.js')){
+	    wp_enqueue_script( 'maptour.mapstyle', get_bloginfo( 'template_directory' ) . '/map-style.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
+	}
 
 
 
