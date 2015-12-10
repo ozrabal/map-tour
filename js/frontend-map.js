@@ -96,9 +96,11 @@ var Maptour = (function(document, window, google){
 			for (var i = 0; i < markers.length; i++) {
 			    if(mapMarkers[i].type !== ctype){
 				mapMarkers[i].setOptions({'opacity': .3, 'clicked': 0});
+				mapMarkers[i].setZIndex(google.maps.Marker.MAX_ZINDEX -1);
 			    }
 			}
 			marker.setOptions({'opacity' :1});
+			marker.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
 			if (iwindow){
 			    iwindow.close();
 			}
@@ -107,6 +109,7 @@ var Maptour = (function(document, window, google){
 			});
 			iwindow.open(Maptour.map, marker);
 			marker.setOptions({'clicked': 1});
+			
                     });
 		},
 		create: function(point, index){
@@ -173,8 +176,10 @@ var Maptour = (function(document, window, google){
 			if(marker.type === type) {
 			    marker.setVisible(true);
 			    marker.setOptions({'opacity': 1, 'strokeWeight':1});
+			    marker.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
 			}else{
 			    marker.setOptions({'opacity': 0.3,'strokeWeight':.1});
+			    marker.setZIndex(google.maps.Marker.MAX_ZINDEX - 1);
 			}
 		    }
 		}, false);
@@ -212,6 +217,15 @@ var Maptour = (function(document, window, google){
 		this.open(buttonsOpen);
 		this.close(buttonsClose);
 	    }
+	},
+	fitView : function(zoom){
+	    fitViewListener =
+		google.maps.event.addListenerOnce(Maptour.map, 'bounds_changed', function(event) {
+		if ( Maptour.map.getZoom()){
+		    Maptour.map.setZoom(zoom);
+		}
+	    });
+	    setTimeout(function(){google.maps.event.removeListener(fitViewListener)}, 2000);
 	}
     };
     window.onload = function() {
@@ -219,6 +233,8 @@ var Maptour = (function(document, window, google){
         Maptour.init();
 	Maptour.placeMarkers(settings.markers);
         Maptour.map.fitBounds(bounds);
+	Maptour.fitView(13);
+	Maptour.map.panToBounds(bounds);
 	Maptour.toggle_markers(element.markerToggleHandler);
 	Maptour.popup.toggle(element.popupOpenHandler,element.popupCloseHandler );
     };
