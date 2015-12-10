@@ -30,13 +30,13 @@ class Maptour {
 	wp_enqueue_style( 'maptour',  MAPTOUR_PLUGIN_URL . 'css/maptour.css');
 	wp_enqueue_style( 'font-avesome',  'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
 	$this->_enqueue_map_styles_js();
-	wp_enqueue_script( 'maptour.app', MAPTOUR_PLUGIN_URL . 'js/frontend-map.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
+	wp_enqueue_script( 'maptour.app', MAPTOUR_PLUGIN_URL . 'js/frontend-map.min.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
 	
     }
 
     public function admin_enqueue_scripts() {
 	wp_enqueue_script( 'maps', 'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&sensor=false' );
-	wp_enqueue_script( 'field-map', plugins_url( '../js/backend-map.js', __FILE__ ), array( 'jquery' ), MAPTOUR_VERSION );
+	wp_enqueue_script( 'field-map', plugins_url( '../js/backend-map.min.js', __FILE__ ), array( 'jquery' ), MAPTOUR_VERSION );
 	wp_localize_script( 'field-map', 'geocode_notfound', __( 'No results were found for the search criteria', 'mt' ) );
     }
 

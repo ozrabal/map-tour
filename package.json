@@ -1,0 +1,24 @@
+{
+  "name": "map-tour",
+  "version": "1.0.0",
+  "description": "Google Maps Wordpress plugin",
+  "main": "map-tour.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ozrabal/map-tour.git"
+  },
+  "author": "Piotr Łepkowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ozrabal/map-tour/issues"
+  },
+  "homepage": "https://github.com/ozrabal/map-tour",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.1"
+  }
+}
