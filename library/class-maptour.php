@@ -29,13 +29,14 @@ class Maptour {
 	wp_enqueue_script( 'maps', 'http://maps.google.com/maps/api/js', array(), true );
 	wp_enqueue_style( 'maptour',  MAPTOUR_PLUGIN_URL . 'css/maptour.css');
 	wp_enqueue_style( 'font-avesome',  'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-	wp_enqueue_script( 'maptour.app', MAPTOUR_PLUGIN_URL . 'js/frontend-map.js' , array( 'jquery', 'maps', 'maptour.mapstyle' ), MAPTOUR_VERSION, true );
 	$this->_enqueue_map_styles_js();
+	wp_enqueue_script( 'maptour.app', MAPTOUR_PLUGIN_URL . 'js/frontend-map.min.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
+	
     }
 
     public function admin_enqueue_scripts() {
 	wp_enqueue_script( 'maps', 'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&sensor=false' );
-	wp_enqueue_script( 'field-map', plugins_url( '../js/backend-map.js', __FILE__ ), array( 'jquery' ), MAPTOUR_VERSION );
+	wp_enqueue_script( 'field-map', plugins_url( '../js/backend-map.min.js', __FILE__ ), array( 'jquery' ), MAPTOUR_VERSION );
 	wp_localize_script( 'field-map', 'geocode_notfound', __( 'No results were found for the search criteria', 'mt' ) );
     }
 
@@ -206,16 +207,16 @@ class Maptour {
     private function _enqueue_map_places_js(){
 	$map_markers = $this->get_map_places();
 	$markers_json = array(
-	    'l10n_print_after' => 'markers = ' . json_encode( $map_markers ) . ';'
+	    'l10n_print_after' => 'var markers = ' . json_encode( $map_markers ) . ';'
 	);
 	wp_localize_script('maptour.app', 'markers', $markers_json);
     }
 
 
     private function _enqueue_map_styles_js(){
-
-	wp_enqueue_script( 'maptour.mapstyle', MAPTOUR_PLUGIN_URL . 'js/map-style.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
-	
+	if(file_exists(get_template_directory() . '/map-style.js')){
+	    wp_enqueue_script( 'maptour.mapstyle', get_bloginfo( 'template_directory' ) . '/map-style.js' , array( 'jquery', 'maps' ), MAPTOUR_VERSION, true );
+	}
 
 
 
@@ -242,7 +243,7 @@ class Maptour {
 		    $types[$type->slug]['color'] = $type_description[0];
 		    $types[$type->slug]['default'] = isset($type_description[1])?1:0;
 		    $hidden = 'hidden';
-		    if($type_description[1] == 'default'){
+		    if(isset($type_description[1]) && $type_description[1] == 'default'){
 			$hidden = '';
 		    }
 		    $html .= '<li><a id="'.$type->slug.'" class="' . $hidden . '" href="#' . $type->slug . '" data-type="' . $type->slug . '">'
