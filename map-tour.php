@@ -4,7 +4,7 @@
  * Plugin URI: http://
  * Description:
  * Version: 1.0.0
- * Author:
+ * Author: Piotr Łepkowski
  * Author URI: http://webkowski.com
  * Text Domain: mt
 */
